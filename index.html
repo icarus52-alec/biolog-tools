@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>E5 孢子釋放計算器</title>
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#5c6b00" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#c22e8a" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0a0e14" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -13,45 +13,45 @@
 <link rel="apple-touch-icon" href="icon-192.png">
 <style>
 :root{
-  --ink:#1a2005;
-  --ink-soft:#5c6640;
-  --paper:#f7f9ee;
+  --ink:#2a0d1e;
+  --ink-soft:#6b4557;
+  --paper:#fdf2f8;
   --card:#ffffff;
-  --accent:#5c6b00;
-  --accent2:#c2540a;
-  --accent-soft:#eef5cc;
-  --accent-strong:#414d00;
-  --line:#e0e8bd;
-  --warn:#c6285b;
-  --warn-soft:#f9dbe6;
+  --accent:#c22e8a;
+  --accent2:#2d3fa8;
+  --accent-soft:#fce4f2;
+  --accent-strong:#8f1e66;
+  --line:#f3d4e8;
+  --warn:#b8462a;
+  --warn-soft:#f8e0d6;
   --radius:10px;
   --mono: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, monospace;
   --sans: ui-sans-serif, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
 }
 @media (prefers-color-scheme: dark){
   :root{
-    --ink:#f8ffde;
-    --ink-soft:#8fa860;
-    --paper:#080c11;
-    --card:#0d1620;
-    --accent:#ccff00;
-    --accent2:#ff8a00;
-    --accent-soft:#1e2a04;
-    --accent-strong:#e2ff6e;
-    --line:#232c08;
-    --warn:#ff2f7a;
-    --warn-soft:#2e0a1a;
+    --ink:#ffe6f5;
+    --ink-soft:#c47ba3;
+    --paper:#0a0810;
+    --card:#170f1f;
+    --accent:#ff61be;
+    --accent2:#3b55ce;
+    --accent-soft:#2a1020;
+    --accent-strong:#ff9adb;
+    --line:#2e1626;
+    --warn:#ff6a3d;
+    --warn-soft:#2e150a;
   }
 }
 :root[data-theme="dark"]{
-  --ink:#f8ffde; --ink-soft:#8fa860; --paper:#080c11; --card:#0d1620;
-  --accent:#ccff00; --accent2:#ff8a00; --accent-soft:#1e2a04; --accent-strong:#e2ff6e;
-  --line:#232c08; --warn:#ff2f7a; --warn-soft:#2e0a1a;
+  --ink:#ffe6f5; --ink-soft:#c47ba3; --paper:#0a0810; --card:#170f1f;
+  --accent:#ff61be; --accent2:#3b55ce; --accent-soft:#2a1020; --accent-strong:#ff9adb;
+  --line:#2e1626; --warn:#ff6a3d; --warn-soft:#2e150a;
 }
 :root[data-theme="light"]{
-  --ink:#1a2005; --ink-soft:#5c6640; --paper:#f7f9ee; --card:#ffffff;
-  --accent:#5c6b00; --accent2:#c2540a; --accent-soft:#eef5cc; --accent-strong:#414d00;
-  --line:#e0e8bd; --warn:#c6285b; --warn-soft:#f9dbe6;
+  --ink:#2a0d1e; --ink-soft:#6b4557; --paper:#fdf2f8; --card:#ffffff;
+  --accent:#c22e8a; --accent2:#2d3fa8; --accent-soft:#fce4f2; --accent-strong:#8f1e66;
+  --line:#f3d4e8; --warn:#b8462a; --warn-soft:#f8e0d6;
 }
 *{box-sizing:border-box;}
 body{
@@ -469,7 +469,7 @@ canvas{width:100%;display:block;}
   "use strict";
 
   var STORAGE_KEY = "e5_spore_release_batches_v1";
-  var PALETTE = ["#ccff00","#ff8a00","#00f0ff","#ff2f7a","#b537ff","#39ff14"];
+  var PALETTE = ["#ff61be","#3b55ce","#ccff00","#ff8a00","#00f0ff","#b537ff"];
   var COUNT_HIGH_THRESHOLD = 250;
 
   function loadBatches(){
