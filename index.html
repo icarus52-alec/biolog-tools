@@ -23,28 +23,28 @@
    ink/line are derived (lightened for light mode, darkened for dark mode) since the
    original swatches are saturated accent colors, not built for full-page backgrounds. */
 
-/* 1. 龍舌蘭毛刺（深藍夜空襯青綠毛刺，黃橘為光斑點綴）: #FDD400 #FDB232 #02B8A2 #01535F */
+/* 1. 龍舌蘭毛刺（近黑夜色襯螢光青綠毛刺，黃橘為光斑點綴）: #FDD400 #FDB232 #02B8A2 #01535F */
 :root, :root[data-palette="agave"]{
-  --ink:#01535f; --ink-soft:#3d7a84; --paper:#eafbf9; --card:#ffffff;
-  --accent:#02918a; --accent2:#e08a12; --accent-soft:#d3f3ee; --accent-strong:#01535f;
-  --line:#bfe8e2; --warn:#d1495b; --warn-soft:#f9dde1;
+  --ink:#013a42; --ink-soft:#3d7a84; --paper:#e6faf7; --card:#ffffff;
+  --accent:#00b09a; --accent2:#e0790a; --accent-soft:#cdf3ec; --accent-strong:#017a6e;
+  --line:#b3e6dd; --warn:#d1495b; --warn-soft:#f9dde1;
 }
 @media (prefers-color-scheme: dark){
   :root, :root[data-palette="agave"]{
-    --ink:#eafffb; --ink-soft:#6fc9bd; --paper:#01535f; --card:#053e47;
-    --accent:#02b8a2; --accent2:#fdb232; --accent-soft:#0c6c66; --accent-strong:#fdd400;
-    --line:#0d6f6a; --warn:#ff6a5c; --warn-soft:#331410;
+    --ink:#dffff9; --ink-soft:#5fc9b8; --paper:#03080a; --card:#081f1d;
+    --accent:#00ffd4; --accent2:#fdb232; --accent-soft:#0a2e29; --accent-strong:#fdd400;
+    --line:#0e3a34; --warn:#ff6a5c; --warn-soft:#331410;
   }
 }
 :root[data-theme="dark"][data-palette="agave"]{
-  --ink:#eafffb; --ink-soft:#6fc9bd; --paper:#01535f; --card:#053e47;
-  --accent:#02b8a2; --accent2:#fdb232; --accent-soft:#0c6c66; --accent-strong:#fdd400;
-  --line:#0d6f6a; --warn:#ff6a5c; --warn-soft:#331410;
+  --ink:#dffff9; --ink-soft:#5fc9b8; --paper:#03080a; --card:#081f1d;
+  --accent:#00ffd4; --accent2:#fdb232; --accent-soft:#0a2e29; --accent-strong:#fdd400;
+  --line:#0e3a34; --warn:#ff6a5c; --warn-soft:#331410;
 }
 :root[data-theme="light"][data-palette="agave"]{
-  --ink:#01535f; --ink-soft:#3d7a84; --paper:#eafbf9; --card:#ffffff;
-  --accent:#02918a; --accent2:#e08a12; --accent-soft:#d3f3ee; --accent-strong:#01535f;
-  --line:#bfe8e2; --warn:#d1495b; --warn-soft:#f9dde1;
+  --ink:#013a42; --ink-soft:#3d7a84; --paper:#e6faf7; --card:#ffffff;
+  --accent:#00b09a; --accent2:#e0790a; --accent-soft:#cdf3ec; --accent-strong:#017a6e;
+  --line:#b3e6dd; --warn:#d1495b; --warn-soft:#f9dde1;
 }
 
 /* 2. 奢華聚光（粉紫/粉紅漸層臉龐襯青綠高光）: #CE96FB #FF8FCF #00C2BA #037A90 */
@@ -579,7 +579,7 @@ canvas{width:100%;display:block;}
       <label>甘油固定</label>
       <div class="seg" id="glycerol-mode-seg">
         <button type="button" class="seg-btn active" data-glycerol="none">不加甘油</button>
-        <button type="button" class="seg-btn" data-glycerol="1to9">1滴甘油+9滴樣本</button>
+        <button type="button" class="seg-btn" data-glycerol="1to9">1µl甘油+9µl樣本</button>
       </div>
     </div>
   </div>
