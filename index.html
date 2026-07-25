@@ -1,0 +1,1112 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>E5 孢子釋放計算器</title>
+<style>
+:root{
+  --ink:#1b2430;
+  --ink-soft:#4c5a68;
+  --paper:#f4f7f6;
+  --card:#ffffff;
+  --accent:#2f7d6b;
+  --accent-soft:#dcece6;
+  --accent-strong:#1f5c4e;
+  --line:#d8e2df;
+  --warn:#c65b3f;
+  --warn-soft:#f6e2dc;
+  --radius:10px;
+  --mono: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, monospace;
+  --sans: ui-sans-serif, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --ink:#e8ede9;
+    --ink-soft:#a9b8b2;
+    --paper:#141a18;
+    --card:#1c2422;
+    --accent:#5fb89e;
+    --accent-soft:#22352f;
+    --accent-strong:#7fd0b6;
+    --line:#2b3936;
+    --warn:#e07f5f;
+    --warn-soft:#3a2620;
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#e8ede9; --ink-soft:#a9b8b2; --paper:#141a18; --card:#1c2422;
+  --accent:#5fb89e; --accent-soft:#22352f; --accent-strong:#7fd0b6;
+  --line:#2b3936; --warn:#e07f5f; --warn-soft:#3a2620;
+}
+:root[data-theme="light"]{
+  --ink:#1b2430; --ink-soft:#4c5a68; --paper:#f4f7f6; --card:#ffffff;
+  --accent:#2f7d6b; --accent-soft:#dcece6; --accent-strong:#1f5c4e;
+  --line:#d8e2df; --warn:#c65b3f; --warn-soft:#f6e2dc;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--sans);
+  -webkit-font-smoothing:antialiased;
+  padding-bottom:3rem;
+}
+.wrap{max-width:640px;margin:0 auto;padding:1.1rem 1rem 2rem;}
+
+header.top{
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  gap:.75rem;
+  padding:.4rem .1rem 1rem;
+  border-bottom:1px solid var(--line);
+  margin-bottom:1.1rem;
+}
+header.top .title{
+  font-family:var(--mono);
+  font-size:1.05rem;
+  font-weight:600;
+  letter-spacing:.02em;
+}
+header.top .title small{
+  display:block;
+  font-family:var(--sans);
+  font-weight:400;
+  font-size:.72rem;
+  color:var(--ink-soft);
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  margin-top:.15rem;
+}
+
+section{margin-bottom:1.1rem;}
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:1rem 1rem 1.1rem;
+}
+.card + .card{margin-top:.75rem;}
+
+.eyebrow{
+  font-family:var(--mono);
+  font-size:.7rem;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--accent-strong);
+  margin:0 0 .6rem;
+  display:flex;
+  align-items:center;
+  gap:.5rem;
+}
+.eyebrow .rule{flex:1;height:1px;background:var(--line);}
+
+.field-row{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:.6rem;
+  margin-bottom:.6rem;
+}
+.field-row.pair{grid-template-columns:1fr 1fr;}
+.field-row.trio{grid-template-columns:1fr 1fr 1fr;}
+label{
+  font-size:.78rem;
+  color:var(--ink-soft);
+  display:block;
+  margin-bottom:.3rem;
+}
+input, select{
+  width:100%;
+  font-family:var(--mono);
+  font-size:1rem;
+  font-variant-numeric:tabular-nums;
+  padding:.55rem .6rem;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:var(--paper);
+  color:var(--ink);
+}
+input:focus, select:focus{
+  outline:2px solid var(--accent);
+  outline-offset:1px;
+}
+.hint{font-size:.72rem;color:var(--ink-soft);margin-top:.2rem;}
+
+.strain-row{
+  display:grid;
+  grid-template-columns:1.3fr 1fr auto;
+  gap:.5rem;
+  align-items:end;
+}
+
+.seg{
+  display:flex;
+  border:1px solid var(--line);
+  border-radius:8px;
+  overflow:hidden;
+}
+.seg-btn{
+  flex:1;
+  background:var(--paper);
+  color:var(--ink-soft);
+  border:none;
+  border-radius:0;
+  font-weight:500;
+  font-size:.8rem;
+  padding:.5rem .4rem;
+}
+.seg-btn.active{
+  background:var(--accent);
+  color:#fff;
+  font-weight:600;
+}
+.seg-btn + .seg-btn{border-left:1px solid var(--line);}
+
+button{
+  font-family:var(--sans);
+  font-weight:600;
+  font-size:.92rem;
+  border:none;
+  border-radius:8px;
+  padding:.65rem 1rem;
+  cursor:pointer;
+}
+button.primary{
+  background:var(--accent);
+  color:#fff;
+  width:100%;
+}
+button.primary:active{background:var(--accent-strong);}
+button.ghost{
+  background:transparent;
+  color:var(--accent-strong);
+  border:1px solid var(--accent-soft);
+}
+button.danger{
+  background:transparent;
+  color:var(--warn);
+  border:1px solid var(--warn-soft);
+  font-size:.75rem;
+  padding:.4rem .6rem;
+}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+
+.result-num{
+  font-family:var(--mono);
+  font-variant-numeric:tabular-nums;
+  font-size:1.5rem;
+  font-weight:600;
+  color:var(--accent-strong);
+}
+.result-sub{font-size:.75rem;color:var(--ink-soft);margin-top:.15rem;}
+.result-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:.75rem;
+  margin-top:.7rem;
+}
+.result-tile{
+  background:var(--accent-soft);
+  border-radius:8px;
+  padding:.6rem .7rem;
+}
+.result-tile .label{font-size:.68rem;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.06em;}
+.result-tile .value{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:1.05rem;margin-top:.15rem;}
+
+table{width:100%;border-collapse:collapse;font-size:.82rem;}
+thead th{
+  text-align:right;
+  font-weight:500;
+  font-size:.68rem;
+  text-transform:uppercase;
+  letter-spacing:.05em;
+  color:var(--ink-soft);
+  border-bottom:1px solid var(--line);
+  padding:.4rem .3rem;
+}
+thead th:first-child{text-align:left;}
+tbody td{
+  text-align:right;
+  padding:.4rem .3rem;
+  border-bottom:1px solid var(--line);
+  font-family:var(--mono);
+  font-variant-numeric:tabular-nums;
+}
+tbody td:first-child{text-align:left;font-family:var(--sans);}
+tbody tr:last-child td{border-bottom:none;}
+.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.plateau-tag{
+  display:inline-block;
+  background:var(--accent);
+  color:#fff;
+  font-size:.62rem;
+  padding:.1rem .4rem;
+  border-radius:4px;
+  margin-left:.4rem;
+  vertical-align:middle;
+}
+
+canvas{width:100%;display:block;}
+
+.batch-list{display:flex;flex-direction:column;gap:.5rem;}
+.batch-item{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:.5rem;
+  padding:.55rem .65rem;
+  border:1px solid var(--line);
+  border-radius:8px;
+  cursor:pointer;
+}
+.batch-item.active{border-color:var(--accent);background:var(--accent-soft);}
+.batch-item .meta{font-size:.78rem;}
+.batch-item .meta b{font-family:var(--mono);}
+.batch-item .meta span{display:block;color:var(--ink-soft);font-size:.68rem;margin-top:.1rem;}
+.swatch{width:.6rem;height:.6rem;border-radius:50%;display:inline-block;margin-right:.4rem;}
+
+.legend{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.6rem;font-size:.72rem;color:var(--ink-soft);}
+.legend .item{display:flex;align-items:center;}
+
+.empty{font-size:.82rem;color:var(--ink-soft);text-align:center;padding:1.2rem 0;}
+
+.footnote{font-size:.7rem;color:var(--ink-soft);line-height:1.5;margin-top:.4rem;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <div class="title">孢子釋放計算器<small>E5 · Zoospore Release Assay</small></div>
+</header>
+
+<section class="card" id="setup-card">
+  <div class="eyebrow">批次設定<span class="rule"></span></div>
+  <div class="field-row pair">
+    <div>
+      <label for="in-strain">菌株</label>
+      <input id="in-strain" type="text" placeholder="例：SpiK" autocomplete="off">
+    </div>
+    <div>
+      <label for="in-salinity">鹽度 (ppt)</label>
+      <select id="in-salinity">
+        <option value="0">0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="4">4</option>
+        <option value="8">8</option>
+        <option value="16">16</option>
+        <option value="32">32</option>
+      </select>
+    </div>
+  </div>
+  <div class="field-row pair">
+    <div>
+      <label for="in-vol">起始體積 (ml)</label>
+      <input id="in-vol" type="number" value="4" step="0.1" inputmode="decimal">
+    </div>
+    <div>
+      <label for="in-sample">每次取樣量 (µl)</label>
+      <input id="in-sample" type="number" value="50" step="1" inputmode="decimal">
+    </div>
+  </div>
+  <div class="footnote">起始體積與取樣量套用到整批時間點；剩餘體積會依已取樣次數自動遞減校正。此批次同時涵蓋 R1/R2/R3 三重複，於下方「新增時間點」個別記錄。</div>
+</section>
+
+<section class="card" id="entry-card">
+  <div class="eyebrow">新增時間點<span class="rule"></span></div>
+  <div class="field-row pair">
+    <div>
+      <label for="in-rep">重複</label>
+      <select id="in-rep">
+        <option value="1">R1</option>
+        <option value="2">R2</option>
+        <option value="3">R3</option>
+      </select>
+    </div>
+    <div>
+      <label for="in-time">經過時間 (hr)</label>
+      <select id="in-time"></select>
+    </div>
+  </div>
+  <div class="field-row pair">
+    <div>
+      <label for="in-glycerol">甘油 (µl)</label>
+      <input id="in-glycerol" type="number" value="1" step="1" inputmode="decimal">
+    </div>
+    <div>
+      <label for="in-sample-vol">樣本 (µl)</label>
+      <input id="in-sample-vol" type="number" value="9" step="1" inputmode="decimal">
+    </div>
+  </div>
+  <div class="hint" id="dilution-hint">稀釋倍數 = (甘油+樣本) ÷ 樣本 = 1.11 倍</div>
+
+  <div class="field-row" style="margin-top:.6rem;">
+    <div>
+      <label>計數方式</label>
+      <div class="seg" id="count-mode-seg">
+        <button type="button" class="seg-btn active" data-mode="center">中央 1 大格</button>
+        <button type="button" class="seg-btn" data-mode="corner4">四角 4 大格</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="field-row" id="count-center-row">
+    <div>
+      <label for="in-count">中央大方格計數（血球計數器讀數）</label>
+      <input id="in-count" type="number" step="1" inputmode="decimal" placeholder="例：38">
+    </div>
+    <div class="hint">濃度 = 計數 × 10⁴ × 稀釋倍數（個/ml）</div>
+  </div>
+
+  <div class="field-row" id="count-corner4-row" style="display:none;">
+    <div class="field-row trio" style="margin-bottom:.4rem;">
+      <div>
+        <label for="in-count-tl">左上</label>
+        <input id="in-count-tl" type="number" step="1" inputmode="decimal">
+      </div>
+      <div>
+        <label for="in-count-tr">右上</label>
+        <input id="in-count-tr" type="number" step="1" inputmode="decimal">
+      </div>
+      <div>
+        <label for="in-count-bl">左下</label>
+        <input id="in-count-bl" type="number" step="1" inputmode="decimal">
+      </div>
+    </div>
+    <div class="field-row pair">
+      <div>
+        <label for="in-count-br">右下</label>
+        <input id="in-count-br" type="number" step="1" inputmode="decimal">
+      </div>
+      <div>
+        <div class="hint" style="margin-top:1.5rem;" id="corner4-hint">總和÷4 = 0</div>
+      </div>
+    </div>
+    <div class="hint">濃度 = (4格總和÷4) × 10⁴ × 稀釋倍數（個/ml）</div>
+  </div>
+
+  <button class="primary" id="btn-add">加入這個時間點</button>
+  <div class="hint" id="entry-msg" style="margin-top:.5rem;"></div>
+  <button class="ghost" id="btn-undo-last" style="width:100%;margin-top:.5rem;display:none;">刪除上一筆記錄</button>
+</section>
+
+<section class="card" id="results-card" style="display:none;">
+  <div class="eyebrow">目前批次曲線<span class="rule"></span></div>
+  <canvas id="chart" height="220"></canvas>
+  <div class="legend" id="legend"></div>
+  <div class="result-grid">
+    <div class="result-tile">
+      <div class="label">最新濃度</div>
+      <div class="value" id="stat-latest-conc">—</div>
+    </div>
+    <div class="result-tile">
+      <div class="label">累積釋放量</div>
+      <div class="value" id="stat-cumulative">—</div>
+    </div>
+  </div>
+  <div class="table-scroll" style="margin-top:.9rem;">
+    <table>
+      <thead>
+        <tr><th>時間</th><th>計數</th><th>濃度(/ml)</th><th>剩餘體積</th><th>新釋放量</th><th>累積量</th><th></th></tr>
+      </thead>
+      <tbody id="table-body"></tbody>
+    </table>
+  </div>
+</section>
+
+<section class="card" id="batches-card">
+  <div class="eyebrow">歷史批次<span class="rule"></span></div>
+  <div class="batch-list" id="batch-list"><div class="empty">尚無歷史批次</div></div>
+  <div class="field-row pair" style="margin-top:.9rem;">
+    <button class="ghost" id="btn-export-csv">匯出全部為 CSV</button>
+    <button class="danger" id="btn-clear-all" style="padding:.65rem 1rem;">清除全部歷史</button>
+  </div>
+  <div class="hint" id="batches-msg" style="margin-top:.5rem;"></div>
+  <div id="csv-preview-wrap" style="display:none;margin-top:.7rem;">
+    <label for="csv-preview-text">CSV 內容（點一下自動全選，再手動複製貼到其他 App）</label>
+    <textarea id="csv-preview-text" readonly
+      style="width:100%;height:8rem;font-family:var(--mono);font-size:.7rem;padding:.5rem;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink);resize:vertical;"
+      onclick="this.select();"></textarea>
+    <button class="ghost" id="btn-csv-preview-close" style="width:100%;margin-top:.4rem;">關閉</button>
+  </div>
+</section>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var STORAGE_KEY = "e5_spore_release_batches_v1";
+  var PALETTE = ["#2f7d6b","#c65b3f","#4c6fa8","#9a6bc6","#c69b2f","#3f9dc6"];
+
+  function loadBatches(){
+    try{
+      var raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : [];
+    }catch(e){ return []; }
+  }
+  function saveBatches(list){
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); }catch(e){}
+  }
+
+  var state = {
+    batches: loadBatches(),
+    activeId: null
+  };
+  var lastAddedPoint = null; // { batchId, time, rep } — for the "undo last" shortcut
+
+  function makeBatchId(strain, salinity){
+    return (strain||"?") + "|" + (salinity||"0") + "ppt|" + Date.now();
+  }
+
+  function currentSetup(){
+    return {
+      strain: document.getElementById("in-strain").value.trim() || "未命名",
+      salinity: document.getElementById("in-salinity").value || "0",
+      startVol: parseFloat(document.getElementById("in-vol").value) || 4,
+      sampleVol: parseFloat(document.getElementById("in-sample").value) || 50
+    };
+  }
+
+  function findOrCreateActiveBatch(){
+    var setup = currentSetup();
+    var key = setup.strain + "|" + setup.salinity;
+    var existing = state.batches.find(function(b){ return b.key === key; });
+    if(existing){
+      state.activeId = existing.id;
+      return existing;
+    }
+    var b = {
+      id: makeBatchId(setup.strain, setup.salinity),
+      key: key,
+      strain: setup.strain,
+      salinity: setup.salinity,
+      startVol: setup.startVol,
+      sampleVol: setup.sampleVol,
+      points: [],
+      createdAt: new Date().toISOString()
+    };
+    state.batches.push(b);
+    state.activeId = b.id;
+    return b;
+  }
+
+  function activeBatch(){
+    return state.batches.find(function(b){ return b.id === state.activeId; }) || null;
+  }
+
+  // --- core calculation: volume-corrected cumulative release, per replicate plate ---
+  function computeSeriesForRep(batch, rep){
+    var pts = batch.points.filter(function(p){ return String(p.rep) === String(rep); })
+      .slice().sort(function(a,b){ return a.time - b.time; });
+    var startVolUl = batch.startVol * 1000;
+    var sampleUl = batch.sampleVol;
+    var rows = [];
+    var prevTotal = null;
+    pts.forEach(function(p, idx){
+      var concPerMl = p.count * 10000 * p.dilution;
+      var remainingVolUl = startVolUl - (idx * sampleUl);
+      if(remainingVolUl < 0) remainingVolUl = 0;
+      var totalSpores = concPerMl * (remainingVolUl / 1000);
+      var newRelease = prevTotal === null ? totalSpores : (totalSpores - prevTotal);
+      if(newRelease < 0) newRelease = 0;
+      var cumulative = (idx === 0 ? newRelease : rows[idx-1].cumulative + newRelease);
+      rows.push({
+        time: p.time,
+        rep: p.rep,
+        count: p.count,
+        dilution: p.dilution,
+        conc: concPerMl,
+        remainingVolUl: remainingVolUl,
+        totalSpores: totalSpores,
+        newRelease: newRelease,
+        cumulative: cumulative
+      });
+      prevTotal = totalSpores;
+    });
+    return rows;
+  }
+
+  function repsInBatch(batch){
+    var reps = [];
+    batch.points.forEach(function(p){
+      if(reps.indexOf(String(p.rep)) === -1) reps.push(String(p.rep));
+    });
+    reps.sort();
+    return reps;
+  }
+
+  // flattened view across all reps, sorted by time then rep — used for the results table
+  function computeSeries(batch){
+    var reps = repsInBatch(batch);
+    var all = [];
+    reps.forEach(function(rep){
+      all = all.concat(computeSeriesForRep(batch, rep));
+    });
+    all.sort(function(a,b){ return a.time - b.time || String(a.rep).localeCompare(String(b.rep)); });
+    return all;
+  }
+
+  function detectPlateauIndex(rows){
+    if(rows.length < 4) return -1;
+    for(var i = 3; i < rows.length; i++){
+      var a = rows[i-3].totalSpores, b = rows[i-2].totalSpores, c = rows[i-1].totalSpores, d = rows[i].totalSpores;
+      var ref = Math.max(d, 1);
+      var rise1 = (b - a) / ref, rise2 = (c - b) / ref, rise3 = (d - c) / ref;
+      if(rise1 < 0.03 && rise2 < 0.03 && rise3 < 0.03){
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  function fmtNum(n){
+    if(n === null || n === undefined || isNaN(n)) return "—";
+    if(Math.abs(n) >= 1000) return n.toLocaleString(undefined,{maximumFractionDigits:0});
+    return (Math.round(n*100)/100).toString();
+  }
+  function fmtSci(n){
+    if(n === null || n === undefined || isNaN(n)) return "—";
+    if(n === 0) return "0";
+    var exp = Math.floor(Math.log10(Math.abs(n)));
+    var mant = n / Math.pow(10, exp);
+    return mant.toFixed(2) + "×10" + toSuperscript(exp);
+  }
+  function toSuperscript(num){
+    var map = {"-":"⁻","0":"⁰","1":"¹","2":"²","3":"³","4":"⁴","5":"⁵","6":"⁶","7":"⁷","8":"⁸","9":"⁹"};
+    return String(num).split("").map(function(ch){ return map[ch] || ch; }).join("");
+  }
+
+  function render(){
+    renderBatchList();
+    renderResults();
+  }
+
+  function renderBatchList(){
+    var list = document.getElementById("batch-list");
+    if(state.batches.length === 0){
+      list.innerHTML = '<div class="empty">尚無歷史批次</div>';
+      return;
+    }
+    var sorted = state.batches.slice().sort(function(a,b){
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    });
+    list.innerHTML = "";
+    sorted.forEach(function(b, i){
+      var color = PALETTE[state.batches.indexOf(b) % PALETTE.length];
+      var div = document.createElement("div");
+      div.className = "batch-item" + (b.id === state.activeId ? " active" : "");
+      var dateStr = new Date(b.createdAt).toLocaleDateString("zh-TW",{month:"numeric",day:"numeric"});
+      var repsCount = repsInBatch(b).length;
+      div.innerHTML =
+        '<div class="meta">' +
+          '<span class="swatch" style="background:' + color + '"></span>' +
+          '<b>' + escapeHtml(b.strain) + '</b> · ' + escapeHtml(b.salinity) + 'ppt' +
+          '<span>' + repsCount + ' 重複 · ' + b.points.length + ' 個時間點 · ' + dateStr + '</span>' +
+        '</div>' +
+        '<button class="danger" data-del="' + b.id + '">刪除</button>';
+      div.addEventListener("click", function(e){
+        if(e.target.dataset.del) return;
+        state.activeId = b.id;
+        document.getElementById("in-strain").value = b.strain;
+        document.getElementById("in-salinity").value = b.salinity;
+        document.getElementById("in-vol").value = b.startVol;
+        document.getElementById("in-sample").value = b.sampleVol;
+        render();
+      });
+      list.appendChild(div);
+      var delBtn = div.querySelector('[data-del]');
+      var delArmed = false;
+      var delArmTimeout = null;
+      delBtn.addEventListener("click", function(ev){
+        ev.stopPropagation();
+        if(!delArmed){
+          delArmed = true;
+          delBtn.textContent = "確定？";
+          delArmTimeout = setTimeout(function(){
+            delArmed = false;
+            delBtn.textContent = "刪除";
+          }, 3000);
+          return;
+        }
+        clearTimeout(delArmTimeout);
+        state.batches = state.batches.filter(function(x){ return x.id !== b.id; });
+        if(state.activeId === b.id) state.activeId = null;
+        saveBatches(state.batches);
+        render();
+      });
+    });
+  }
+
+  var REP_DASH = { "1": [], "2": [6,4], "3": [2,3] };
+
+  function renderResults(){
+    var card = document.getElementById("results-card");
+    var batch = activeBatch();
+    if(!batch || batch.points.length === 0){
+      card.style.display = "none";
+      updateUndoLastButton();
+      return;
+    }
+    card.style.display = "block";
+    var reps = repsInBatch(batch);
+    var repRows = {};
+    reps.forEach(function(rep){ repRows[rep] = computeSeriesForRep(batch, rep); });
+
+    // latest stats: most recent point across all reps
+    var flat = computeSeries(batch);
+    var latest = flat[flat.length-1];
+    document.getElementById("stat-latest-conc").textContent = fmtSci(latest.conc) + " /ml (R" + latest.rep + ")";
+    var cumSum = reps.reduce(function(sum, rep){
+      var rows = repRows[rep];
+      return sum + (rows.length ? rows[rows.length-1].cumulative : 0);
+    }, 0);
+    document.getElementById("stat-cumulative").textContent = fmtSci(cumSum) + " 個（3重複加總）";
+
+    var tbody = document.getElementById("table-body");
+    tbody.innerHTML = "";
+    reps.forEach(function(rep){
+      var rows = repRows[rep];
+      var plateauIdx = detectPlateauIndex(rows);
+      rows.forEach(function(r, i){
+        var tr = document.createElement("tr");
+        var plateauMark = (i === plateauIdx) ? '<span class="plateau-tag">平台</span>' : "";
+        tr.innerHTML =
+          '<td>R' + escapeHtml(rep) + ' · T' + r.time + plateauMark + '</td>' +
+          '<td>' + fmtNum(r.count) + '</td>' +
+          '<td>' + fmtSci(r.conc) + '</td>' +
+          '<td>' + fmtNum(r.remainingVolUl) + ' µl</td>' +
+          '<td>' + fmtSci(r.newRelease) + '</td>' +
+          '<td>' + fmtSci(r.cumulative) + '</td>' +
+          '<td><button class="danger" data-del-time="' + r.time + '" data-del-rep="' + escapeHtml(rep) + '" style="padding:.3rem .5rem;font-size:.68rem;">刪除</button></td>';
+        tbody.appendChild(tr);
+        var delBtn = tr.querySelector('[data-del-time]');
+        var armed = false, armTimeout = null;
+        delBtn.addEventListener("click", function(){
+          if(!armed){
+            armed = true;
+            delBtn.textContent = "確定？";
+            armTimeout = setTimeout(function(){ armed = false; delBtn.textContent = "刪除"; }, 3000);
+            return;
+          }
+          clearTimeout(armTimeout);
+          deletePoint(batch, r.time, rep);
+        });
+      });
+    });
+
+    drawChart();
+    renderLegend();
+    updateUndoLastButton();
+  }
+
+  function deletePoint(batch, time, rep){
+    batch.points = batch.points.filter(function(p){
+      return !(p.time === time && String(p.rep) === String(rep));
+    });
+    saveBatches(state.batches);
+    showEntryMsg("已刪除 R" + rep + " · T" + time, false);
+    render();
+  }
+
+  function updateUndoLastButton(){
+    var btn = document.getElementById("btn-undo-last");
+    var batch = activeBatch();
+    var last = lastAddedPoint;
+    var stillExists = batch && last && last.batchId === batch.id && batch.points.some(function(p){
+      return p.time === last.time && String(p.rep) === String(last.rep);
+    });
+    if(stillExists){
+      btn.style.display = "";
+      btn.textContent = "刪除上一筆記錄（R" + last.rep + " · T" + last.time + "）";
+    }else{
+      btn.style.display = "none";
+    }
+  }
+
+  function lineSwatchSvg(color, dashArray){
+    var dash = dashArray.join(",");
+    return '<svg width="22" height="10" viewBox="0 0 22 10" style="margin-right:.4rem;vertical-align:middle;flex:none;">' +
+      '<line x1="1" y1="5" x2="21" y2="5" stroke="' + color + '" stroke-width="2.4"' +
+      (dash ? ' stroke-dasharray="' + dash + '"' : '') + ' stroke-linecap="round"/></svg>';
+  }
+
+  function renderLegend(){
+    var legend = document.getElementById("legend");
+    legend.innerHTML = "";
+    var series = seriesToPlot();
+    series.forEach(function(s){
+      var span = document.createElement("div");
+      span.className = "item";
+      span.innerHTML = lineSwatchSvg(s.color, REP_DASH[String(s.rep)] || []) +
+        escapeHtml(s.batch.strain) + ' ' + escapeHtml(s.batch.salinity) + 'ppt R' + escapeHtml(s.rep) +
+        (s.batch.id === state.activeId ? "（目前）" : "");
+      legend.appendChild(span);
+    });
+  }
+
+  // builds one plottable line per (batch, rep) — active batch's 3 reps in full color,
+  // up to 3 other same-strain batches (other salinities) muted for comparison
+  function seriesToPlot(){
+    var active = activeBatch();
+    if(!active) return [];
+    var sameStrain = state.batches.filter(function(b){
+      return b.strain === active.strain && b.points.length > 0;
+    });
+    var others = sameStrain.filter(function(b){ return b.id !== active.id; }).slice(0,3);
+    var batchesOrdered = [active].concat(others);
+    var series = [];
+    batchesOrdered.forEach(function(b){
+      var color = PALETTE[state.batches.indexOf(b) % PALETTE.length];
+      repsInBatch(b).forEach(function(rep){
+        series.push({ batch: b, rep: rep, color: color, rows: computeSeriesForRep(b, rep) });
+      });
+    });
+    return series;
+  }
+
+  function drawChart(){
+    var canvas = document.getElementById("chart");
+    var dpr = window.devicePixelRatio || 1;
+    var cssWidth = canvas.clientWidth || 320;
+    var cssHeight = 220;
+    canvas.width = cssWidth * dpr;
+    canvas.height = cssHeight * dpr;
+    var ctx = canvas.getContext("2d");
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.clearRect(0,0,cssWidth,cssHeight);
+
+    var isDark = getComputedStyle(document.documentElement).getPropertyValue('--paper').trim().toLowerCase().indexOf('#14') === 0;
+    var lineColor = isDark ? "#2b3936" : "#d8e2df";
+    var textColor = isDark ? "#a9b8b2" : "#4c5a68";
+
+    var series = seriesToPlot();
+    if(series.length === 0) return;
+
+    var allCumMax = 0, allTimeMax = 0;
+    series.forEach(function(s){
+      s.rows.forEach(function(r){
+        if(r.cumulative > allCumMax) allCumMax = r.cumulative;
+        if(r.time > allTimeMax) allTimeMax = r.time;
+      });
+    });
+    if(allCumMax === 0) allCumMax = 1;
+    if(allTimeMax === 0) allTimeMax = 1;
+
+    var padL = 46, padR = 12, padT = 14, padB = 26;
+    var plotW = cssWidth - padL - padR;
+    var plotH = cssHeight - padT - padB;
+
+    // grid
+    ctx.strokeStyle = lineColor;
+    ctx.lineWidth = 1;
+    ctx.font = "10px ui-monospace, monospace";
+    ctx.fillStyle = textColor;
+    var gridN = 4;
+    for(var g=0; g<=gridN; g++){
+      var y = padT + plotH - (plotH * g / gridN);
+      ctx.beginPath();
+      ctx.moveTo(padL, y);
+      ctx.lineTo(cssWidth - padR, y);
+      ctx.stroke();
+      var val = allCumMax * g / gridN;
+      ctx.textAlign = "right";
+      ctx.fillText(fmtSci(val), padL - 6, y + 3);
+    }
+    ctx.textAlign = "center";
+    ctx.fillText("0", padL, padT + plotH + 16);
+    ctx.fillText(allTimeMax + "hr", cssWidth - padR, padT + plotH + 16);
+
+    series.forEach(function(s){
+      var rows = s.rows;
+      if(rows.length === 0) return;
+      var isActive = s.batch.id === state.activeId;
+      ctx.strokeStyle = s.color;
+      ctx.lineWidth = isActive ? 2.2 : 1.3;
+      ctx.globalAlpha = isActive ? 1 : 0.45;
+      ctx.setLineDash(REP_DASH[String(s.rep)] || []);
+      ctx.beginPath();
+      rows.forEach(function(r, i){
+        var x = padL + plotW * (r.time / allTimeMax);
+        var y = padT + plotH - (plotH * (r.cumulative / allCumMax));
+        if(i === 0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+      });
+      ctx.stroke();
+      ctx.setLineDash([]);
+      // emphasize endpoint
+      var last = rows[rows.length-1];
+      var lx = padL + plotW * (last.time / allTimeMax);
+      var ly = padT + plotH - (plotH * (last.cumulative / allCumMax));
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = s.color;
+      ctx.beginPath();
+      ctx.arc(lx, ly, isActive ? 3.5 : 2.2, 0, Math.PI*2);
+      ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+  }
+
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+    });
+  }
+
+  function computeDilution(){
+    var glycerol = parseFloat(document.getElementById("in-glycerol").value) || 0;
+    var sampleVol = parseFloat(document.getElementById("in-sample-vol").value) || 0;
+    if(sampleVol <= 0) return 1;
+    return (glycerol + sampleVol) / sampleVol;
+  }
+
+  function updateDilutionHint(){
+    var glycerol = parseFloat(document.getElementById("in-glycerol").value) || 0;
+    var sampleVol = parseFloat(document.getElementById("in-sample-vol").value) || 0;
+    var dilution = computeDilution();
+    document.getElementById("dilution-hint").textContent =
+      "稀釋倍數 = (甘油+樣本) ÷ 樣本 = (" + glycerol + "+" + sampleVol + ")÷" + sampleVol + " = " + (Math.round(dilution*100)/100) + " 倍";
+  }
+  document.getElementById("in-glycerol").addEventListener("input", updateDilutionHint);
+  document.getElementById("in-sample-vol").addEventListener("input", updateDilutionHint);
+  updateDilutionHint();
+
+  var countMode = "center";
+  var segButtons = document.querySelectorAll("#count-mode-seg .seg-btn");
+  segButtons.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      countMode = btn.dataset.mode;
+      segButtons.forEach(function(b){ b.classList.toggle("active", b === btn); });
+      document.getElementById("count-center-row").style.display = countMode === "center" ? "" : "none";
+      document.getElementById("count-corner4-row").style.display = countMode === "corner4" ? "" : "none";
+    });
+  });
+
+  function updateCorner4Hint(){
+    var tl = parseFloat(document.getElementById("in-count-tl").value) || 0;
+    var tr = parseFloat(document.getElementById("in-count-tr").value) || 0;
+    var bl = parseFloat(document.getElementById("in-count-bl").value) || 0;
+    var br = parseFloat(document.getElementById("in-count-br").value) || 0;
+    var sum = tl + tr + bl + br;
+    document.getElementById("corner4-hint").textContent =
+      "總和 " + sum + " ÷ 4 = " + (Math.round((sum/4)*100)/100);
+  }
+  ["in-count-tl","in-count-tr","in-count-bl","in-count-br"].forEach(function(id){
+    document.getElementById(id).addEventListener("input", updateCorner4Hint);
+  });
+
+  function showEntryMsg(text, isError, ms){
+    var el = document.getElementById("entry-msg");
+    el.textContent = text;
+    el.style.color = isError ? "var(--warn)" : "";
+    if(ms){
+      setTimeout(function(){ if(el.textContent === text) el.textContent = ""; }, ms);
+    }
+  }
+
+  var addBtn = document.getElementById("btn-add");
+  var overwriteArmed = null; // { time, rep } — set when a duplicate is detected and awaiting confirm
+
+  function resetOverwriteArm(){
+    if(overwriteArmed){
+      overwriteArmed = null;
+      addBtn.textContent = "加入這個時間點";
+    }
+  }
+  document.getElementById("in-rep").addEventListener("change", resetOverwriteArm);
+  document.getElementById("in-time").addEventListener("change", resetOverwriteArm);
+  document.getElementById("in-count").addEventListener("input", resetOverwriteArm);
+  ["in-count-tl","in-count-tr","in-count-bl","in-count-br"].forEach(function(id){
+    document.getElementById(id).addEventListener("input", resetOverwriteArm);
+  });
+
+  addBtn.addEventListener("click", function(){
+    var rep = document.getElementById("in-rep").value;
+    var time = parseFloat(document.getElementById("in-time").value);
+    var glycerol = parseFloat(document.getElementById("in-glycerol").value) || 0;
+    var sampleVol = parseFloat(document.getElementById("in-sample-vol").value) || 0;
+    var dilution = computeDilution();
+
+    var count, corners = null;
+    if(countMode === "corner4"){
+      var tl = parseFloat(document.getElementById("in-count-tl").value);
+      var tr = parseFloat(document.getElementById("in-count-tr").value);
+      var bl = parseFloat(document.getElementById("in-count-bl").value);
+      var br = parseFloat(document.getElementById("in-count-br").value);
+      if([tl,tr,bl,br].some(function(v){ return isNaN(v); })){
+        showEntryMsg("請輸入四角大格的計數值", true);
+        return;
+      }
+      corners = { tl: tl, tr: tr, bl: bl, br: br };
+      count = (tl + tr + bl + br) / 4;
+    }else{
+      count = parseFloat(document.getElementById("in-count").value);
+    }
+
+    if(isNaN(time) || isNaN(count)){
+      showEntryMsg("請輸入經過時間與計數值", true);
+      return;
+    }
+    var batch = findOrCreateActiveBatch();
+    var existingIdx = batch.points.findIndex(function(p){ return p.time === time && String(p.rep) === String(rep); });
+    var point = { time: time, rep: rep, dilution: dilution, glycerol: glycerol, sampleVol: sampleVol, count: count, countMode: countMode, corners: corners };
+
+    if(existingIdx >= 0 && !(overwriteArmed && overwriteArmed.time === time && overwriteArmed.rep === rep)){
+      overwriteArmed = { time: time, rep: rep };
+      var old = batch.points[existingIdx];
+      showEntryMsg("R" + rep + " · T" + time + " 已有記錄（計數 " + fmtNum(old.count) + "），再按一次「加入」以覆蓋", true);
+      addBtn.textContent = "確定覆蓋 R" + rep + " · T" + time;
+      return;
+    }
+    overwriteArmed = null;
+    addBtn.textContent = "加入這個時間點";
+
+    if(existingIdx >= 0){
+      batch.points[existingIdx] = point;
+    }else{
+      batch.points.push(point);
+    }
+    saveBatches(state.batches);
+    lastAddedPoint = { batchId: batch.id, time: time, rep: rep };
+    document.getElementById("in-count").value = "";
+    ["in-count-tl","in-count-tr","in-count-bl","in-count-br"].forEach(function(id){
+      document.getElementById(id).value = "";
+    });
+    updateCorner4Hint();
+    showEntryMsg("已記錄 R" + rep + " · T" + time, false);
+    render();
+  });
+
+  document.getElementById("btn-undo-last").addEventListener("click", function(){
+    var batch = activeBatch();
+    if(!batch || !lastAddedPoint || lastAddedPoint.batchId !== batch.id) return;
+    var time = lastAddedPoint.time, rep = lastAddedPoint.rep;
+    lastAddedPoint = null;
+    deletePoint(batch, time, rep);
+  });
+
+  function toCsv(){
+    var header = ["strain","salinity_ppt","replicate","start_vol_ml","sample_vol_ul",
+      "time_hr","count_mode","glycerol_ul","sample_dilution_ul","dilution_factor",
+      "raw_count_tl","raw_count_tr","raw_count_bl","raw_count_br","effective_count",
+      "conc_per_ml","remaining_vol_ul","total_spores","new_release","cumulative_release"];
+    var lines = [header.join(",")];
+    var sortedBatches = state.batches.slice().sort(function(a,b){
+      return new Date(a.createdAt) - new Date(b.createdAt);
+    });
+    sortedBatches.forEach(function(b){
+      var rows = computeSeries(b);
+      rows.forEach(function(r){
+        var p = b.points.find(function(pt){ return pt.time === r.time && String(pt.rep) === String(r.rep); });
+        var corners = (p && p.corners) || {};
+        var cells = [
+          b.strain, b.salinity, r.rep, b.startVol, b.sampleVol,
+          r.time, (p && p.countMode) || "center", p ? p.glycerol : "", p ? p.sampleVol : "", r.dilution,
+          corners.tl !== undefined ? corners.tl : "",
+          corners.tr !== undefined ? corners.tr : "",
+          corners.bl !== undefined ? corners.bl : "",
+          corners.br !== undefined ? corners.br : "",
+          r.count, r.conc, r.remainingVolUl, r.totalSpores, r.newRelease, r.cumulative
+        ];
+        lines.push(cells.map(csvCell).join(","));
+      });
+    });
+    return lines.join("\r\n");
+  }
+
+  function csvCell(v){
+    var s = String(v === undefined || v === null ? "" : v);
+    if(/[",\r\n]/.test(s)) s = '"' + s.replace(/"/g,'""') + '"';
+    return s;
+  }
+
+  function showBatchesMsg(text, isError, ms){
+    var el = document.getElementById("batches-msg");
+    el.textContent = text;
+    el.style.color = isError ? "var(--warn)" : "";
+    if(ms){
+      setTimeout(function(){ if(el.textContent === text) el.textContent = ""; }, ms);
+    }
+  }
+
+  function showCsvPreview(csv, filename){
+    var wrap = document.getElementById("csv-preview-wrap");
+    var ta = document.getElementById("csv-preview-text");
+    ta.value = csv;
+    wrap.style.display = "block";
+    ta.focus();
+    ta.select();
+  }
+
+  document.getElementById("btn-export-csv").addEventListener("click", function(){
+    if(state.batches.length === 0){
+      showBatchesMsg("目前沒有任何批次數據可匯出", true);
+      return;
+    }
+    var csv = toCsv();
+    var filename = "E5_spore_release_" + new Date().toISOString().slice(0,10) + ".csv";
+    try{
+      var blob = new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8;" });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 10000);
+      showBatchesMsg("已下載 " + filename, false);
+    }catch(err){
+      console.error("export failed", err);
+      showBatchesMsg("下載失敗，改用文字框：點一下後會自動全選，手動複製", true);
+      showCsvPreview(csv, filename);
+    }
+  });
+
+  document.getElementById("btn-csv-preview-close").addEventListener("click", function(){
+    document.getElementById("csv-preview-wrap").style.display = "none";
+  });
+
+  var clearArmed = false;
+  var clearBtn = document.getElementById("btn-clear-all");
+  var clearArmTimeout = null;
+  clearBtn.addEventListener("click", function(){
+    if(state.batches.length === 0) return;
+    if(!clearArmed){
+      clearArmed = true;
+      clearBtn.textContent = "再按一次確定清除";
+      showBatchesMsg("此動作無法復原，建議先匯出 CSV 備份", true);
+      clearArmTimeout = setTimeout(function(){
+        clearArmed = false;
+        clearBtn.textContent = "清除全部歷史";
+      }, 4000);
+      return;
+    }
+    clearTimeout(clearArmTimeout);
+    clearArmed = false;
+    clearBtn.textContent = "清除全部歷史";
+    state.batches = [];
+    state.activeId = null;
+    saveBatches(state.batches);
+    showBatchesMsg("已清除全部歷史", false);
+    render();
+  });
+
+  (function populateTimeOptions(){
+    var sel = document.getElementById("in-time");
+    for(var h = 0; h <= 24; h += 0.5){
+      var opt = document.createElement("option");
+      opt.value = h;
+      opt.textContent = "T" + (h % 1 === 0 ? h : h);
+      sel.appendChild(opt);
+    }
+  })();
+
+  render();
+})();
+</script>
+</body>
+</html>
