@@ -5,51 +5,51 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>E5 孢子釋放計算器</title>
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#2f7d6b" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#141a18" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#0a7d82" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0a0e14" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="孢子釋放計算器">
 <link rel="apple-touch-icon" href="icon-192.png">
 <style>
 :root{
-  --ink:#1b2430;
-  --ink-soft:#4c5a68;
-  --paper:#f4f7f6;
+  --ink:#0a1f21;
+  --ink-soft:#3d6166;
+  --paper:#eef8f8;
   --card:#ffffff;
-  --accent:#2f7d6b;
-  --accent-soft:#dcece6;
-  --accent-strong:#1f5c4e;
-  --line:#d8e2df;
-  --warn:#c65b3f;
-  --warn-soft:#f6e2dc;
+  --accent:#0a7d82;
+  --accent-soft:#d3f3f2;
+  --accent-strong:#055a5f;
+  --line:#c3e7e6;
+  --warn:#c6285b;
+  --warn-soft:#f9dbe6;
   --radius:10px;
   --mono: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, monospace;
   --sans: ui-sans-serif, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
 }
 @media (prefers-color-scheme: dark){
   :root{
-    --ink:#e8ede9;
-    --ink-soft:#a9b8b2;
-    --paper:#141a18;
-    --card:#1c2422;
-    --accent:#5fb89e;
-    --accent-soft:#22352f;
-    --accent-strong:#7fd0b6;
-    --line:#2b3936;
-    --warn:#e07f5f;
-    --warn-soft:#3a2620;
+    --ink:#d6feff;
+    --ink-soft:#5fa8ac;
+    --paper:#080c11;
+    --card:#0d1620;
+    --accent:#00f0ff;
+    --accent-soft:#0a2a30;
+    --accent-strong:#7bfbff;
+    --line:#123038;
+    --warn:#ff2f7a;
+    --warn-soft:#2e0a1a;
   }
 }
 :root[data-theme="dark"]{
-  --ink:#e8ede9; --ink-soft:#a9b8b2; --paper:#141a18; --card:#1c2422;
-  --accent:#5fb89e; --accent-soft:#22352f; --accent-strong:#7fd0b6;
-  --line:#2b3936; --warn:#e07f5f; --warn-soft:#3a2620;
+  --ink:#d6feff; --ink-soft:#5fa8ac; --paper:#080c11; --card:#0d1620;
+  --accent:#00f0ff; --accent-soft:#0a2a30; --accent-strong:#7bfbff;
+  --line:#123038; --warn:#ff2f7a; --warn-soft:#2e0a1a;
 }
 :root[data-theme="light"]{
-  --ink:#1b2430; --ink-soft:#4c5a68; --paper:#f4f7f6; --card:#ffffff;
-  --accent:#2f7d6b; --accent-soft:#dcece6; --accent-strong:#1f5c4e;
-  --line:#d8e2df; --warn:#c65b3f; --warn-soft:#f6e2dc;
+  --ink:#0a1f21; --ink-soft:#3d6166; --paper:#eef8f8; --card:#ffffff;
+  --accent:#0a7d82; --accent-soft:#d3f3f2; --accent-strong:#055a5f;
+  --line:#c3e7e6; --warn:#c6285b; --warn-soft:#f9dbe6;
 }
 *{box-sizing:border-box;}
 body{
@@ -467,7 +467,7 @@ canvas{width:100%;display:block;}
   "use strict";
 
   var STORAGE_KEY = "e5_spore_release_batches_v1";
-  var PALETTE = ["#2f7d6b","#c65b3f","#4c6fa8","#9a6bc6","#c69b2f","#3f9dc6"];
+  var PALETTE = ["#00f0ff","#ff2f7a","#b537ff","#39ff14","#ffe600","#ff8a00"];
   var COUNT_HIGH_THRESHOLD = 250;
 
   function loadBatches(){
@@ -807,9 +807,9 @@ canvas{width:100%;display:block;}
     ctx.setTransform(dpr,0,0,dpr,0,0);
     ctx.clearRect(0,0,cssWidth,cssHeight);
 
-    var isDark = getComputedStyle(document.documentElement).getPropertyValue('--paper').trim().toLowerCase().indexOf('#14') === 0;
-    var lineColor = isDark ? "#2b3936" : "#d8e2df";
-    var textColor = isDark ? "#a9b8b2" : "#4c5a68";
+    var rootStyle = getComputedStyle(document.documentElement);
+    var lineColor = rootStyle.getPropertyValue('--line').trim();
+    var textColor = rootStyle.getPropertyValue('--ink-soft').trim();
 
     var series = seriesToPlot();
     if(series.length === 0) return;
