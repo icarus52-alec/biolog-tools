@@ -13,45 +13,230 @@
 <link rel="apple-touch-icon" href="icon-192.png">
 <style>
 :root{
-  --ink:#141c42;
-  --ink-soft:#4d5aa0;
-  --paper:#dbe2fb;
-  --card:#eef1fd;
-  --accent:#c22e8a;
-  --accent2:#2d3fa8;
-  --accent-soft:#f9d9ee;
-  --accent-strong:#8f1e66;
-  --line:#b9c4f0;
-  --warn:#b8462a;
-  --warn-soft:#f8e0d6;
   --radius:10px;
   --mono: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, monospace;
   --sans: ui-sans-serif, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
 }
+
+/* Each palette below is one of the user's 9 chosen Shutterstock neon-color-palette
+   swatch sets. accent/accent2 are taken directly from the swatch hexes; paper/card/
+   ink/line are derived (lightened for light mode, darkened for dark mode) since the
+   original swatches are saturated accent colors, not built for full-page backgrounds. */
+
+/* 1. 龍舌蘭毛刺（深藍夜空襯青綠毛刺，黃橘為光斑點綴）: #FDD400 #FDB232 #02B8A2 #01535F */
+:root, :root[data-palette="agave"]{
+  --ink:#01535f; --ink-soft:#3d7a84; --paper:#eafbf9; --card:#ffffff;
+  --accent:#02918a; --accent2:#e08a12; --accent-soft:#d3f3ee; --accent-strong:#01535f;
+  --line:#bfe8e2; --warn:#d1495b; --warn-soft:#f9dde1;
+}
 @media (prefers-color-scheme: dark){
-  :root{
-    --ink:#eef1ff;
-    --ink-soft:#8f9bdb;
-    --paper:#0e1030;
-    --card:#1a1f4d;
-    --accent:#ff61be;
-    --accent2:#5f77e8;
-    --accent-soft:#2e1435;
-    --accent-strong:#ff9adb;
-    --line:#2c3470;
-    --warn:#ff6a3d;
-    --warn-soft:#2e150a;
+  :root, :root[data-palette="agave"]{
+    --ink:#eafffb; --ink-soft:#6fc9bd; --paper:#01535f; --card:#053e47;
+    --accent:#02b8a2; --accent2:#fdb232; --accent-soft:#0c6c66; --accent-strong:#fdd400;
+    --line:#0d6f6a; --warn:#ff6a5c; --warn-soft:#331410;
   }
 }
-:root[data-theme="dark"]{
-  --ink:#eef1ff; --ink-soft:#8f9bdb; --paper:#0e1030; --card:#1a1f4d;
-  --accent:#ff61be; --accent2:#5f77e8; --accent-soft:#2e1435; --accent-strong:#ff9adb;
-  --line:#2c3470; --warn:#ff6a3d; --warn-soft:#2e150a;
+:root[data-theme="dark"][data-palette="agave"]{
+  --ink:#eafffb; --ink-soft:#6fc9bd; --paper:#01535f; --card:#053e47;
+  --accent:#02b8a2; --accent2:#fdb232; --accent-soft:#0c6c66; --accent-strong:#fdd400;
+  --line:#0d6f6a; --warn:#ff6a5c; --warn-soft:#331410;
 }
-:root[data-theme="light"]{
-  --ink:#141c42; --ink-soft:#4d5aa0; --paper:#dbe2fb; --card:#eef1fd;
-  --accent:#c22e8a; --accent2:#2d3fa8; --accent-soft:#f9d9ee; --accent-strong:#8f1e66;
-  --line:#b9c4f0; --warn:#b8462a; --warn-soft:#f8e0d6;
+:root[data-theme="light"][data-palette="agave"]{
+  --ink:#01535f; --ink-soft:#3d7a84; --paper:#eafbf9; --card:#ffffff;
+  --accent:#02918a; --accent2:#e08a12; --accent-soft:#d3f3ee; --accent-strong:#01535f;
+  --line:#bfe8e2; --warn:#d1495b; --warn-soft:#f9dde1;
+}
+
+/* 2. 奢華聚光（粉紫/粉紅漸層臉龐襯青綠高光）: #CE96FB #FF8FCF #00C2BA #037A90 */
+:root[data-palette="glow"]{
+  --ink:#3a1a45; --ink-soft:#7d5a86; --paper:#faf0fb; --card:#ffffff;
+  --accent:#d94fb8; --accent2:#00929e; --accent-soft:#f6def4; --accent-strong:#7b1e6f;
+  --line:#eecef2; --warn:#c6285b; --warn-soft:#f9dbe6;
+}
+@media (prefers-color-scheme: dark){
+  :root[data-palette="glow"]{
+    --ink:#fdeeff; --ink-soft:#e0a8d9; --paper:#2a1240; --card:#3a1a52;
+    --accent:#ff8fcf; --accent2:#00c2ba; --accent-soft:#4a2560; --accent-strong:#ce96fb;
+    --line:#4c2a66; --warn:#ff6a5c; --warn-soft:#331410;
+  }
+}
+:root[data-theme="dark"][data-palette="glow"]{
+  --ink:#fdeeff; --ink-soft:#e0a8d9; --paper:#2a1240; --card:#3a1a52;
+  --accent:#ff8fcf; --accent2:#00c2ba; --accent-soft:#4a2560; --accent-strong:#ce96fb;
+  --line:#4c2a66; --warn:#ff6a5c; --warn-soft:#331410;
+}
+:root[data-theme="light"][data-palette="glow"]{
+  --ink:#3a1a45; --ink-soft:#7d5a86; --paper:#faf0fb; --card:#ffffff;
+  --accent:#d94fb8; --accent2:#00929e; --accent-soft:#f6def4; --accent-strong:#7b1e6f;
+  --line:#eecef2; --warn:#c6285b; --warn-soft:#f9dbe6;
+}
+
+/* 3. 閃亮的線條（黑背景襯螢光青綠霓虹管，粉紫暈染）: #01FFC3 #01FFFF #FFB3FD #9D72FF */
+:root[data-palette="glowlines"]{
+  --ink:#241247; --ink-soft:#6a5a94; --paper:#f5f0ff; --card:#ffffff;
+  --accent:#00a888; --accent2:#8a4fe8; --accent-soft:#e6def9; --accent-strong:#00816b;
+  --line:#e0d0f7; --warn:#c6285b; --warn-soft:#f9dbe6;
+}
+@media (prefers-color-scheme: dark){
+  :root[data-palette="glowlines"]{
+    --ink:#eafffe; --ink-soft:#a68fd9; --paper:#0d0d1a; --card:#191934;
+    --accent:#01ffc3; --accent2:#9d72ff; --accent-soft:#132b3d; --accent-strong:#01ffff;
+    --line:#28285a; --warn:#ffb3fd; --warn-soft:#331030;
+  }
+}
+:root[data-theme="dark"][data-palette="glowlines"]{
+  --ink:#eafffe; --ink-soft:#a68fd9; --paper:#0d0d1a; --card:#191934;
+  --accent:#01ffc3; --accent2:#9d72ff; --accent-soft:#132b3d; --accent-strong:#01ffff;
+  --line:#28285a; --warn:#ffb3fd; --warn-soft:#331030;
+}
+:root[data-theme="light"][data-palette="glowlines"]{
+  --ink:#241247; --ink-soft:#6a5a94; --paper:#f5f0ff; --card:#ffffff;
+  --accent:#00a888; --accent2:#8a4fe8; --accent-soft:#e6def9; --accent-strong:#00816b;
+  --line:#e0d0f7; --warn:#c6285b; --warn-soft:#f9dbe6;
+}
+
+/* 4. 鮮豔的文具（橘色桌面襯黃綠紙張，藍綠迴紋針點綴）: #A0EDFF #EBF875 #28CF75 #FE6B35 */
+:root[data-palette="stationery"]{
+  --ink:#5c2408; --ink-soft:#a3623a; --paper:#fff0e8; --card:#ffffff;
+  --accent:#c94d16; --accent2:#1f9e5c; --accent-soft:#ffe0d0; --accent-strong:#8f350d;
+  --line:#f5d2bc; --warn:#c6285b; --warn-soft:#f9dbe6;
+}
+@media (prefers-color-scheme: dark){
+  :root[data-palette="stationery"]{
+    --ink:#fff2e6; --ink-soft:#e0a37c; --paper:#4a1f08; --card:#642c0d;
+    --accent:#fe6b35; --accent2:#ebf875; --accent-soft:#7a3812; --accent-strong:#a0edff;
+    --line:#7a3812; --warn:#28cf75; --warn-soft:#0a331d;
+  }
+}
+:root[data-theme="dark"][data-palette="stationery"]{
+  --ink:#fff2e6; --ink-soft:#e0a37c; --paper:#4a1f08; --card:#642c0d;
+  --accent:#fe6b35; --accent2:#ebf875; --accent-soft:#7a3812; --accent-strong:#a0edff;
+  --line:#7a3812; --warn:#28cf75; --warn-soft:#0a331d;
+}
+:root[data-theme="light"][data-palette="stationery"]{
+  --ink:#5c2408; --ink-soft:#a3623a; --paper:#fff0e8; --card:#ffffff;
+  --accent:#c94d16; --accent2:#1f9e5c; --accent-soft:#ffe0d0; --accent-strong:#8f350d;
+  --line:#f5d2bc; --warn:#c6285b; --warn-soft:#f9dbe6;
+}
+
+/* 5. 明亮的散景（深藍底浮著黃綠光球，桃紅/黃交織）: #FCF340 #7FFF00 #FB33DB #0310EA */
+:root[data-palette="bokeh"]{
+  --ink:#0a0f6b; --ink-soft:#5a5fb0; --paper:#eef0ff; --card:#ffffff;
+  --accent:#5e9e00; --accent2:#c92bb0; --accent-soft:#e0f0d0; --accent-strong:#0310ea;
+  --line:#d4d8f7; --warn:#c6285b; --warn-soft:#f9dbe6;
+}
+@media (prefers-color-scheme: dark){
+  :root[data-palette="bokeh"]{
+    --ink:#f0f4ff; --ink-soft:#8fa0e8; --paper:#0310ea; --card:#020c99;
+    --accent:#7fff00; --accent2:#fb33db; --accent-soft:#0a1fb8; --accent-strong:#fcf340;
+    --line:#1c2fc4; --warn:#ff6a5c; --warn-soft:#331410;
+  }
+}
+:root[data-theme="dark"][data-palette="bokeh"]{
+  --ink:#f0f4ff; --ink-soft:#8fa0e8; --paper:#0310ea; --card:#020c99;
+  --accent:#7fff00; --accent2:#fb33db; --accent-soft:#0a1fb8; --accent-strong:#fcf340;
+  --line:#1c2fc4; --warn:#ff6a5c; --warn-soft:#331410;
+}
+:root[data-theme="light"][data-palette="bokeh"]{
+  --ink:#0a0f6b; --ink-soft:#5a5fb0; --paper:#eef0ff; --card:#ffffff;
+  --accent:#5e9e00; --accent2:#c92bb0; --accent-soft:#e0f0d0; --accent-strong:#0310ea;
+  --line:#d4d8f7; --warn:#c6285b; --warn-soft:#f9dbe6;
+}
+
+/* 6. 發光的海葵（深藍夜色背景襯黃綠海葵觸手，青綠/淡藍紫點綴）: #B8FB3C #5CE5D5 #7898FB #001437 */
+:root[data-palette="anemone"]{
+  --ink:#001437; --ink-soft:#3d5a8a; --paper:#eef3fc; --card:#ffffff;
+  --accent:#5c9e00; --accent2:#2696a3; --accent-soft:#e0f0c7; --accent-strong:#001437;
+  --line:#c7d6f3; --warn:#c6285b; --warn-soft:#f9dbe6;
+}
+@media (prefers-color-scheme: dark){
+  :root[data-palette="anemone"]{
+    --ink:#eafffb; --ink-soft:#7ba8d9; --paper:#001437; --card:#052050;
+    --accent:#b8fb3c; --accent2:#5ce5d5; --accent-soft:#0a2960; --accent-strong:#7898fb;
+    --line:#0d3070; --warn:#ff8a5c; --warn-soft:#331e10;
+  }
+}
+:root[data-theme="dark"][data-palette="anemone"]{
+  --ink:#eafffb; --ink-soft:#7ba8d9; --paper:#001437; --card:#052050;
+  --accent:#b8fb3c; --accent2:#5ce5d5; --accent-soft:#0a2960; --accent-strong:#7898fb;
+  --line:#0d3070; --warn:#ff8a5c; --warn-soft:#331e10;
+}
+:root[data-theme="light"][data-palette="anemone"]{
+  --ink:#001437; --ink-soft:#3d5a8a; --paper:#eef3fc; --card:#ffffff;
+  --accent:#5c9e00; --accent2:#2696a3; --accent-soft:#e0f0c7; --accent-strong:#001437;
+  --line:#c7d6f3; --warn:#c6285b; --warn-soft:#f9dbe6;
+}
+
+/* 7. 漸變圖形（淺藍泡泡漸層背景襯粉紅文字，藍紫/淡紫點綴）: #9DDCFF #C1CFFC #FE87FD #6576EA */
+:root[data-palette="gradient"]{
+  --ink:#1e1a52; --ink-soft:#5a5a94; --paper:#e4f0ff; --card:#ffffff;
+  --accent:#c9219e; --accent2:#3f52c4; --accent-soft:#d0e4fc; --accent-strong:#8a1470;
+  --line:#c4dcf7; --warn:#c6285b; --warn-soft:#f9dbe6;
+}
+@media (prefers-color-scheme: dark){
+  :root[data-palette="gradient"]{
+    --ink:#eef4ff; --ink-soft:#93a8db; --paper:#1c2a5c; --card:#28397a;
+    --accent:#fe87fd; --accent2:#9ddcff; --accent-soft:#334a99; --accent-strong:#c1cffc;
+    --line:#3a4d99; --warn:#ff8a5c; --warn-soft:#331e10;
+  }
+}
+:root[data-theme="dark"][data-palette="gradient"]{
+  --ink:#eef4ff; --ink-soft:#93a8db; --paper:#1c2a5c; --card:#28397a;
+  --accent:#fe87fd; --accent2:#9ddcff; --accent-soft:#334a99; --accent-strong:#c1cffc;
+  --line:#3a4d99; --warn:#ff8a5c; --warn-soft:#331e10;
+}
+:root[data-theme="light"][data-palette="gradient"]{
+  --ink:#1e1a52; --ink-soft:#5a5a94; --paper:#e4f0ff; --card:#ffffff;
+  --accent:#c9219e; --accent2:#3f52c4; --accent-soft:#d0e4fc; --accent-strong:#8a1470;
+  --line:#c4dcf7; --warn:#c6285b; --warn-soft:#f9dbe6;
+}
+
+/* 8. 抽象壁紙（粉紅+青綠潑墨背景襯紫色文字圓框，黃色點綴）: #00FECA #FDF200 #FF85EA #7B61F8 */
+:root[data-palette="streetart"]{
+  --ink:#3a1050; --ink-soft:#7a5a94; --paper:#fce8f7; --card:#ffffff;
+  --accent:#6a3fd9; --accent2:#00a88e; --accent-soft:#f5d9ee; --accent-strong:#4a1e99;
+  --line:#f2c8e6; --warn:#c6285b; --warn-soft:#f9dbe6;
+}
+@media (prefers-color-scheme: dark){
+  :root[data-palette="streetart"]{
+    --ink:#fbe6ff; --ink-soft:#e099d9; --paper:#4a1240; --card:#601a52;
+    --accent:#7b61f8; --accent2:#00feca; --accent-soft:#6b2560; --accent-strong:#ff85ea;
+    --line:#7a2e6b; --warn:#fdf200; --warn-soft:#332e0a;
+  }
+}
+:root[data-theme="dark"][data-palette="streetart"]{
+  --ink:#fbe6ff; --ink-soft:#e099d9; --paper:#4a1240; --card:#601a52;
+  --accent:#7b61f8; --accent2:#00feca; --accent-soft:#6b2560; --accent-strong:#ff85ea;
+  --line:#7a2e6b; --warn:#fdf200; --warn-soft:#332e0a;
+}
+:root[data-theme="light"][data-palette="streetart"]{
+  --ink:#3a1050; --ink-soft:#7a5a94; --paper:#fce8f7; --card:#ffffff;
+  --accent:#6a3fd9; --accent2:#00a88e; --accent-soft:#f5d9ee; --accent-strong:#4a1e99;
+  --line:#f2c8e6; --warn:#c6285b; --warn-soft:#f9dbe6;
+}
+
+/* 9. 搶眼的粉紅色（寶藍天空背景襯螢光粉紅建築，深棕剪影點綴）: #FFDEF3 #FF61BE #3B55CE #35212A */
+:root[data-palette="pinkbuilding"]{
+  --ink:#131b45; --ink-soft:#4d5aa0; --paper:#e6ecfb; --card:#ffffff;
+  --accent:#c22e8a; --accent2:#35212a; --accent-soft:#f9d9ee; --accent-strong:#8f1e66;
+  --line:#c4d0f5; --warn:#b8462a; --warn-soft:#f8e0d6;
+}
+@media (prefers-color-scheme: dark){
+  :root[data-palette="pinkbuilding"]{
+    --ink:#ffdef3; --ink-soft:#9ab0e0; --paper:#1c2a6b; --card:#283a8f;
+    --accent:#ff61be; --accent2:#35212a; --accent-soft:#324aa8; --accent-strong:#ff9adb;
+    --line:#3a4fa8; --warn:#ff6a3d; --warn-soft:#2e150a;
+  }
+}
+:root[data-theme="dark"][data-palette="pinkbuilding"]{
+  --ink:#ffdef3; --ink-soft:#9ab0e0; --paper:#1c2a6b; --card:#283a8f;
+  --accent:#ff61be; --accent2:#35212a; --accent-soft:#324aa8; --accent-strong:#ff9adb;
+  --line:#3a4fa8; --warn:#ff6a3d; --warn-soft:#2e150a;
+}
+:root[data-theme="light"][data-palette="pinkbuilding"]{
+  --ink:#131b45; --ink-soft:#4d5aa0; --paper:#e6ecfb; --card:#ffffff;
+  --accent:#c22e8a; --accent2:#35212a; --accent-soft:#f9d9ee; --accent-strong:#8f1e66;
+  --line:#c4d0f5; --warn:#b8462a; --warn-soft:#f8e0d6;
 }
 *{box-sizing:border-box;}
 body{
@@ -66,13 +251,34 @@ body{
 
 header.top{
   display:flex;
-  align-items:baseline;
+  align-items:center;
   justify-content:space-between;
-  gap:.75rem;
+  gap:.6rem;
+  flex-wrap:wrap;
   padding:.4rem .1rem 1rem;
   border-bottom:1px solid var(--line);
   margin-bottom:1.1rem;
 }
+.palette-picker{
+  display:flex;
+  gap:.35rem;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
+.palette-dot{
+  width:1.6rem;
+  height:1.6rem;
+  border-radius:50%;
+  border:2px solid var(--card);
+  box-shadow:0 0 0 1px var(--line);
+  padding:0;
+  cursor:pointer;
+  background:linear-gradient(135deg, var(--dot1) 50%, var(--dot2) 50%);
+  flex:none;
+}
+.palette-dot:hover{ box-shadow:0 0 0 1px var(--ink-soft); }
+.palette-dot.active{ box-shadow:0 0 0 2px var(--accent); }
+.palette-dot:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
 header.top .title{
   font-family:var(--mono);
   font-size:1.05rem;
@@ -289,6 +495,17 @@ canvas{width:100%;display:block;}
 
 <header class="top">
   <div class="title">孢子釋放計算器<small>E5 · Zoospore Release Assay</small></div>
+  <div class="palette-picker" id="palette-picker">
+    <button type="button" class="palette-dot" data-palette="agave" style="--dot1:#02b8a2;--dot2:#fdb232;" aria-label="龍舌蘭毛刺"></button>
+    <button type="button" class="palette-dot" data-palette="glow" style="--dot1:#ff8fcf;--dot2:#00c2ba;" aria-label="奢華聚光"></button>
+    <button type="button" class="palette-dot" data-palette="glowlines" style="--dot1:#01ffc3;--dot2:#9d72ff;" aria-label="閃亮的線條"></button>
+    <button type="button" class="palette-dot" data-palette="stationery" style="--dot1:#fe6b35;--dot2:#ebf875;" aria-label="鮮豔的文具"></button>
+    <button type="button" class="palette-dot" data-palette="bokeh" style="--dot1:#7fff00;--dot2:#fb33db;" aria-label="明亮的散景"></button>
+    <button type="button" class="palette-dot" data-palette="anemone" style="--dot1:#b8fb3c;--dot2:#5ce5d5;" aria-label="發光的海葵"></button>
+    <button type="button" class="palette-dot" data-palette="gradient" style="--dot1:#fe87fd;--dot2:#9ddcff;" aria-label="漸變圖形"></button>
+    <button type="button" class="palette-dot" data-palette="streetart" style="--dot1:#ff85ea;--dot2:#00feca;" aria-label="抽象壁紙"></button>
+    <button type="button" class="palette-dot" data-palette="pinkbuilding" style="--dot1:#ff61be;--dot2:#3b55ce;" aria-label="搶眼的粉紅色"></button>
+  </div>
 </header>
 
 <section class="card" id="setup-card">
@@ -1154,6 +1371,30 @@ canvas{width:100%;display:block;}
       opt.textContent = "T" + (h % 1 === 0 ? h : h);
       sel.appendChild(opt);
     }
+  })();
+
+  (function paletteSwitcher(){
+    var PALETTE_KEY = "e5_spore_release_palette_v1";
+    var dots = document.querySelectorAll(".palette-dot");
+
+    function applyPalette(name){
+      document.documentElement.setAttribute("data-palette", name);
+      dots.forEach(function(d){ d.classList.toggle("active", d.dataset.palette === name); });
+      drawChart();
+    }
+
+    var saved = null;
+    try{ saved = localStorage.getItem(PALETTE_KEY); }catch(e){}
+    if(saved) applyPalette(saved);
+    else if(dots.length) applyPalette(dots[0].dataset.palette);
+
+    dots.forEach(function(d){
+      d.addEventListener("click", function(){
+        var name = d.dataset.palette;
+        applyPalette(name);
+        try{ localStorage.setItem(PALETTE_KEY, name); }catch(e){}
+      });
+    });
   })();
 
   render();
