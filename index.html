@@ -4,6 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>E5 孢子釋放計算器</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2f7d6b" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#141a18" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="孢子釋放計算器">
+<link rel="apple-touch-icon" href="icon-192.png">
 <style>
 :root{
   --ink:#1b2430;
@@ -359,6 +366,7 @@ canvas{width:100%;display:block;}
       <input id="in-count" type="number" step="1" inputmode="decimal" placeholder="例：38">
     </div>
     <div class="hint">濃度 = 計數 × 10⁴ × 稀釋倍數（個/ml）</div>
+    <div class="hint" id="count-high-warn" style="display:none;color:var(--warn);"></div>
   </div>
 
   <div class="field-row" id="count-corner4-row" style="display:none;">
@@ -386,6 +394,7 @@ canvas{width:100%;display:block;}
       </div>
     </div>
     <div class="hint">濃度 = (4格總和÷4) × 10⁴ × 稀釋倍數（個/ml）</div>
+    <div class="hint" id="corner4-high-warn" style="display:none;color:var(--warn);"></div>
   </div>
 
   <button class="primary" id="btn-add">加入這個時間點</button>
@@ -442,6 +451,7 @@ canvas{width:100%;display:block;}
 
   var STORAGE_KEY = "e5_spore_release_batches_v1";
   var PALETTE = ["#2f7d6b","#c65b3f","#4c6fa8","#9a6bc6","#c69b2f","#3f9dc6"];
+  var COUNT_HIGH_THRESHOLD = 250;
 
   function loadBatches(){
     try{
@@ -893,10 +903,31 @@ canvas{width:100%;display:block;}
     var sum = tl + tr + bl + br;
     document.getElementById("corner4-hint").textContent =
       "總和 " + sum + " ÷ 4 = " + (Math.round((sum/4)*100)/100);
+
+    var warnEl = document.getElementById("corner4-high-warn");
+    var highest = Math.max(tl, tr, bl, br);
+    if(highest >= COUNT_HIGH_THRESHOLD){
+      warnEl.style.display = "block";
+      warnEl.textContent = "數量偏高（單格 " + highest + "），建議稀釋後重數";
+    }else{
+      warnEl.style.display = "none";
+    }
   }
   ["in-count-tl","in-count-tr","in-count-bl","in-count-br"].forEach(function(id){
     document.getElementById(id).addEventListener("input", updateCorner4Hint);
   });
+
+  function updateCountHighWarn(){
+    var warnEl = document.getElementById("count-high-warn");
+    var count = parseFloat(document.getElementById("in-count").value);
+    if(!isNaN(count) && count >= COUNT_HIGH_THRESHOLD){
+      warnEl.style.display = "block";
+      warnEl.textContent = "數量偏高（" + count + "），建議稀釋後重數";
+    }else{
+      warnEl.style.display = "none";
+    }
+  }
+  document.getElementById("in-count").addEventListener("input", updateCountHighWarn);
 
   function showEntryMsg(text, isError, ms){
     var el = document.getElementById("entry-msg");
@@ -976,6 +1007,7 @@ canvas{width:100%;display:block;}
       document.getElementById(id).value = "";
     });
     updateCorner4Hint();
+    updateCountHighWarn();
     showEntryMsg("已記錄 R" + rep + " · T" + time, false);
     render();
   });
@@ -1107,6 +1139,14 @@ canvas{width:100%;display:block;}
 
   render();
 })();
+
+if("serviceWorker" in navigator){
+  window.addEventListener("load", function(){
+    navigator.serviceWorker.register("sw.js").catch(function(err){
+      console.error("service worker registration failed", err);
+    });
+  });
+}
 </script>
 </body>
 </html>
