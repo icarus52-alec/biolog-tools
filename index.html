@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>E5 孢子釋放計算器</title>
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0e7a1f" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#5c6b00" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0a0e14" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -13,15 +13,15 @@
 <link rel="apple-touch-icon" href="icon-192.png">
 <style>
 :root{
-  --ink:#0d2110;
-  --ink-soft:#4a6650;
-  --paper:#f2f9ef;
+  --ink:#1a2005;
+  --ink-soft:#5c6640;
+  --paper:#f7f9ee;
   --card:#ffffff;
-  --accent:#0e7a1f;
+  --accent:#5c6b00;
   --accent2:#c2540a;
-  --accent-soft:#d9f3d3;
-  --accent-strong:#0a5c17;
-  --line:#c8e6c2;
+  --accent-soft:#eef5cc;
+  --accent-strong:#414d00;
+  --line:#e0e8bd;
   --warn:#c6285b;
   --warn-soft:#f9dbe6;
   --radius:10px;
@@ -30,28 +30,28 @@
 }
 @media (prefers-color-scheme: dark){
   :root{
-    --ink:#ecffe6;
-    --ink-soft:#66a86f;
+    --ink:#f8ffde;
+    --ink-soft:#8fa860;
     --paper:#080c11;
     --card:#0d1620;
-    --accent:#39ff14;
+    --accent:#ccff00;
     --accent2:#ff8a00;
-    --accent-soft:#0e2a0a;
-    --accent-strong:#8dff6e;
-    --line:#123018;
+    --accent-soft:#1e2a04;
+    --accent-strong:#e2ff6e;
+    --line:#232c08;
     --warn:#ff2f7a;
     --warn-soft:#2e0a1a;
   }
 }
 :root[data-theme="dark"]{
-  --ink:#ecffe6; --ink-soft:#66a86f; --paper:#080c11; --card:#0d1620;
-  --accent:#39ff14; --accent2:#ff8a00; --accent-soft:#0e2a0a; --accent-strong:#8dff6e;
-  --line:#123018; --warn:#ff2f7a; --warn-soft:#2e0a1a;
+  --ink:#f8ffde; --ink-soft:#8fa860; --paper:#080c11; --card:#0d1620;
+  --accent:#ccff00; --accent2:#ff8a00; --accent-soft:#1e2a04; --accent-strong:#e2ff6e;
+  --line:#232c08; --warn:#ff2f7a; --warn-soft:#2e0a1a;
 }
 :root[data-theme="light"]{
-  --ink:#0d2110; --ink-soft:#4a6650; --paper:#f2f9ef; --card:#ffffff;
-  --accent:#0e7a1f; --accent2:#c2540a; --accent-soft:#d9f3d3; --accent-strong:#0a5c17;
-  --line:#c8e6c2; --warn:#c6285b; --warn-soft:#f9dbe6;
+  --ink:#1a2005; --ink-soft:#5c6640; --paper:#f7f9ee; --card:#ffffff;
+  --accent:#5c6b00; --accent2:#c2540a; --accent-soft:#eef5cc; --accent-strong:#414d00;
+  --line:#e0e8bd; --warn:#c6285b; --warn-soft:#f9dbe6;
 }
 *{box-sizing:border-box;}
 body{
@@ -469,7 +469,7 @@ canvas{width:100%;display:block;}
   "use strict";
 
   var STORAGE_KEY = "e5_spore_release_batches_v1";
-  var PALETTE = ["#39ff14","#ff8a00","#00f0ff","#ff2f7a","#b537ff","#ffe600"];
+  var PALETTE = ["#ccff00","#ff8a00","#00f0ff","#ff2f7a","#b537ff","#39ff14"];
   var COUNT_HIGH_THRESHOLD = 250;
 
   function loadBatches(){
