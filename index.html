@@ -574,17 +574,26 @@ canvas{width:100%;display:block;}
       <select id="in-time"></select>
     </div>
   </div>
-  <div class="field-row pair">
+  <div class="field-row">
     <div>
-      <label for="in-glycerol">甘油 (µl)</label>
-      <input id="in-glycerol" type="number" value="1" step="1" inputmode="decimal">
-    </div>
-    <div>
-      <label for="in-sample-vol">樣本 (µl)</label>
-      <input id="in-sample-vol" type="number" value="9" step="1" inputmode="decimal">
+      <label>甘油固定</label>
+      <div class="seg" id="glycerol-mode-seg">
+        <button type="button" class="seg-btn active" data-glycerol="none">不加甘油</button>
+        <button type="button" class="seg-btn" data-glycerol="1to9">1滴甘油+9滴樣本</button>
+      </div>
     </div>
   </div>
-  <div class="hint" id="dilution-hint">稀釋倍數 = (甘油+樣本) ÷ 樣本 = 1.11 倍</div>
+  <div class="field-row pair" style="margin-top:.6rem;">
+    <div>
+      <label for="in-predilute-vol">樣品稀釋：取樣量 (µl)</label>
+      <input id="in-predilute-vol" type="number" value="1" step="1" inputmode="decimal">
+    </div>
+    <div>
+      <label for="in-predilute-water">加入稀釋水量 (µl)</label>
+      <input id="in-predilute-water" type="number" value="0" step="1" inputmode="decimal">
+    </div>
+  </div>
+  <div class="hint" id="dilution-hint">稀釋倍數 = 1 × 1 = 1 倍</div>
 
   <div class="field-row" style="margin-top:.6rem;">
     <div>
@@ -1102,22 +1111,40 @@ canvas{width:100%;display:block;}
     });
   }
 
+  var glycerolMode = "none"; // "none" or "1to9"
+  var glycerolButtons = document.querySelectorAll("#glycerol-mode-seg .seg-btn");
+  glycerolButtons.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      glycerolMode = btn.dataset.glycerol;
+      glycerolButtons.forEach(function(b){ b.classList.toggle("active", b === btn); });
+      updateDilutionHint();
+    });
+  });
+
+  function glycerolFactor(){
+    return glycerolMode === "1to9" ? (1 + 9) / 9 : 1;
+  }
+
+  function predilutionFactor(){
+    var vol = parseFloat(document.getElementById("in-predilute-vol").value) || 0;
+    var water = parseFloat(document.getElementById("in-predilute-water").value) || 0;
+    if(vol <= 0) return 1;
+    return (vol + water) / vol;
+  }
+
   function computeDilution(){
-    var glycerol = parseFloat(document.getElementById("in-glycerol").value) || 0;
-    var sampleVol = parseFloat(document.getElementById("in-sample-vol").value) || 0;
-    if(sampleVol <= 0) return 1;
-    return (glycerol + sampleVol) / sampleVol;
+    return glycerolFactor() * predilutionFactor();
   }
 
   function updateDilutionHint(){
-    var glycerol = parseFloat(document.getElementById("in-glycerol").value) || 0;
-    var sampleVol = parseFloat(document.getElementById("in-sample-vol").value) || 0;
-    var dilution = computeDilution();
+    var gf = glycerolFactor();
+    var pf = predilutionFactor();
+    var total = gf * pf;
     document.getElementById("dilution-hint").textContent =
-      "稀釋倍數 = (甘油+樣本) ÷ 樣本 = (" + glycerol + "+" + sampleVol + ")÷" + sampleVol + " = " + (Math.round(dilution*100)/100) + " 倍";
+      "稀釋倍數 = 甘油(" + (Math.round(gf*100)/100) + ") × 樣品稀釋(" + (Math.round(pf*100)/100) + ") = " + (Math.round(total*100)/100) + " 倍";
   }
-  document.getElementById("in-glycerol").addEventListener("input", updateDilutionHint);
-  document.getElementById("in-sample-vol").addEventListener("input", updateDilutionHint);
+  document.getElementById("in-predilute-vol").addEventListener("input", updateDilutionHint);
+  document.getElementById("in-predilute-water").addEventListener("input", updateDilutionHint);
   updateDilutionHint();
 
   var countMode = "center";
@@ -1193,8 +1220,8 @@ canvas{width:100%;display:block;}
   addBtn.addEventListener("click", function(){
     var rep = document.getElementById("in-rep").value;
     var time = parseFloat(document.getElementById("in-time").value);
-    var glycerol = parseFloat(document.getElementById("in-glycerol").value) || 0;
-    var sampleVol = parseFloat(document.getElementById("in-sample-vol").value) || 0;
+    var prediluteVol = parseFloat(document.getElementById("in-predilute-vol").value) || 0;
+    var prediluteWater = parseFloat(document.getElementById("in-predilute-water").value) || 0;
     var dilution = computeDilution();
 
     var count, corners = null;
@@ -1219,7 +1246,7 @@ canvas{width:100%;display:block;}
     }
     var batch = findOrCreateActiveBatch();
     var existingIdx = batch.points.findIndex(function(p){ return p.time === time && String(p.rep) === String(rep); });
-    var point = { time: time, rep: rep, dilution: dilution, glycerol: glycerol, sampleVol: sampleVol, count: count, countMode: countMode, corners: corners };
+    var point = { time: time, rep: rep, dilution: dilution, glycerolMode: glycerolMode, prediluteVol: prediluteVol, prediluteWater: prediluteWater, count: count, countMode: countMode, corners: corners };
 
     if(existingIdx >= 0 && !(overwriteArmed && overwriteArmed.time === time && overwriteArmed.rep === rep)){
       overwriteArmed = { time: time, rep: rep };
@@ -1258,7 +1285,7 @@ canvas{width:100%;display:block;}
 
   function toCsv(){
     var header = ["strain","salinity_ppt","replicate","start_vol_ml","sample_vol_ul",
-      "time_hr","count_mode","glycerol_ul","sample_dilution_ul","dilution_factor",
+      "time_hr","count_mode","glycerol_mode","predilute_sample_ul","predilute_water_ul","dilution_factor",
       "raw_count_tl","raw_count_tr","raw_count_bl","raw_count_br","effective_count",
       "conc_per_ml","remaining_vol_ul","total_spores","new_release","cumulative_release"];
     var lines = [header.join(",")];
@@ -1272,7 +1299,8 @@ canvas{width:100%;display:block;}
         var corners = (p && p.corners) || {};
         var cells = [
           b.strain, b.salinity, r.rep, b.startVol, b.sampleVol,
-          r.time, (p && p.countMode) || "center", p ? p.glycerol : "", p ? p.sampleVol : "", r.dilution,
+          r.time, (p && p.countMode) || "center", (p && p.glycerolMode) || "none",
+          p ? p.prediluteVol : "", p ? p.prediluteWater : "", r.dilution,
           corners.tl !== undefined ? corners.tl : "",
           corners.tr !== undefined ? corners.tr : "",
           corners.bl !== undefined ? corners.bl : "",
